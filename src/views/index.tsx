@@ -1,11 +1,13 @@
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 import {Card, CardBody, CardFooter, Spinner} from "@heroui/react";
 import {Link} from "react-router";
 import {motion} from "framer-motion";
-import {useSuspenseInfiniteQuery} from '@tanstack/react-query';
+import {useSuspenseInfiniteQuery, useSuspenseQuery} from '@tanstack/react-query';
 import {Article, ArticleListResponse, getArticles} from '../api/article';
 import {useInView} from 'react-intersection-observer';
 import {formatDate} from '../utils/date';
+import PasswordModal from "@/components/PasswordModal.tsx";
+import {verifyPermission} from "@/api/api.ts";
 
 const PAGE_SIZE = 10;
 
@@ -15,6 +17,7 @@ const Index: FC = () => {
     const {
         data,
         fetchNextPage,
+        refetch,
         hasNextPage,
         isFetchingNextPage,
     } = useSuspenseInfiniteQuery({
@@ -26,6 +29,18 @@ const Index: FC = () => {
             return page < totalPages ? page + 1 : undefined;
         },
         initialPageParam: 1,
+        refetchOnWindowFocus: true,
+
+    });
+    useEffect(() => {
+        refetch()
+    });
+
+    const {
+        data: hasPermission,
+    } = useSuspenseQuery({
+        queryKey: ["has_permission"],
+        queryFn: verifyPermission
     });
 
     // 当最后一个元素进入视口时加载下一页
@@ -37,6 +52,7 @@ const Index: FC = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
+            <PasswordModal/>
             <div className="space-y-8">
                 {articles.map((article: Article) => (
                     <motion.div
@@ -100,6 +116,12 @@ const Index: FC = () => {
                                         whileHover={{x: 5}}
                                         transition={{type: "spring", stiffness: 300}}
                                     >
+                                        {hasPermission && <Link
+                                            to={`/article/${article.id}/edit`}
+                                            className="text-primary mr-5 hover:text-primary-600 transition-colors text-sm font-medium tracking-wide"
+                                        >
+                                            编辑
+                                        </Link>}
                                         <Link
                                             to={`/article/${article.id}`}
                                             className="text-primary hover:text-primary-600 transition-colors text-sm font-medium tracking-wide"
@@ -107,6 +129,7 @@ const Index: FC = () => {
                                             阅读更多 →
                                         </Link>
                                     </motion.div>
+
                                 </div>
                             </CardFooter>
                         </Card>

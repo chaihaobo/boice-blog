@@ -1,40 +1,38 @@
-import {FC, useRef, useState, useEffect} from 'react';
+import {FC, useRef, useState} from 'react';
 import {Button, Input, Textarea} from '@heroui/react'
 import {Editor} from '@tinymce/tinymce-react';
 import type {Editor as TinyMCEEditor} from 'tinymce';
 import {useQuery} from '@tanstack/react-query';
 import {getTags, Tag} from '@/api/tag';
+import {useMemo} from 'react';
+import {CreateArticleRequest} from "@/api/article.ts";
 
-interface ArticleViewProps {
+export interface ArticleViewProps {
     initialTitle?: string;
     initialDescription?: string;
     initialContent?: string;
-    initialTags?: string[];
-    onSubmit: (data: {
-        title: string;
-        description: string;
-        content: string;
-        tags: string[];
-    }) => void;
+    initialTags?: Tag[];
+    onSubmit: (data: CreateArticleRequest) => void;
     submitButtonText?: string;
 }
+
 
 const apiKey: string = import.meta.env.VITE_TINY_API_KEY as string;
 
 const ArticleView: FC<ArticleViewProps> = ({
-    initialTitle = "",
-    initialDescription = "",
-    initialContent = "",
-    initialTags = [],
-    onSubmit,
-    submitButtonText = "保存文章"
-}) => {
+                                               initialTitle = "",
+                                               initialDescription = "",
+                                               initialContent = "",
+                                               initialTags = [],
+                                               onSubmit,
+                                               submitButtonText = "保存文章"
+                                           }) => {
     const editorRef = useRef<TinyMCEEditor>(null);
     const [title, setTitle] = useState<string>(initialTitle);
     const [description, setDescription] = useState<string>(initialDescription);
-    const [tags, setTags] = useState<string[]>(initialTags);
+    const [tags, setTags] = useState<Tag[]>(initialTags || []);
     const [tagInput, setTagInput] = useState<string>("");
-    const [isTagInputFocused, setIsTagInputFocused] = useState<boolean>(false);
+    const debouncedTagInput = useMemo(() => tagInput.trim(), [tagInput]);
     const [errors, setErrors] = useState<{
         title?: string;
         description?: string;
@@ -42,31 +40,31 @@ const ArticleView: FC<ArticleViewProps> = ({
     }>({});
 
     const {data: tagList = []} = useQuery({
-        queryKey: ['tags'],
-        queryFn: () => getTags().then(res => res.data),
-        enabled: isTagInputFocused
+        queryKey: ['tags', debouncedTagInput],
+        queryFn: () => getTags(tagInput),
+        enabled: debouncedTagInput.length > 0
     });
 
     const availableTags = tagList
-        .map(tag => tag.name)
-        .filter(tagName => !tags.includes(tagName));
+        .filter(tag => !tags.some(t => t.id === tag.id));
 
-    const handleAddTag = (tagName: string) => {
-        if (tagName.trim() && !tags.includes(tagName.trim())) {
-            setTags([...tags, tagName.trim()]);
+    const handleAddTag = (tag: Tag) => {
+        if (!tags.some(t => t.name === tag.name)) {
+            setTags([...tags, tag]);
             setTagInput("");
         }
     };
 
-    const handleRemoveTag = (tagToRemove: string) => {
-        setTags(tags.filter(tag => tag !== tagToRemove));
+    const handleRemoveTag = (tagToRemove: Tag) => {
+        setTags(tags.filter(tag => tag.id !== tagToRemove.id));
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (tagInput.trim()) {
-                handleAddTag(tagInput);
+            const matchingTag = tagList.find(tag => tag.name.toLowerCase() === tagInput.trim().toLowerCase());
+            if (!matchingTag) {
+                handleAddTag({name: tagInput, id: 0});
             }
         }
     };
@@ -159,27 +157,26 @@ const ArticleView: FC<ArticleViewProps> = ({
                                 value={tagInput}
                                 onChange={(e) => setTagInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                onFocus={() => setIsTagInputFocused(true)}
-                                onBlur={() => setTimeout(() => setIsTagInputFocused(false), 200)}
                                 placeholder="输入标签后按回车添加"
                                 className="flex-1"
                             />
                             <Button
                                 variant="bordered"
-                                onClick={() => handleAddTag(tagInput)}
+                                onClick={() => handleAddTag({id: 0, name: tagInput})}
                             >
                                 添加
                             </Button>
                         </div>
-                        {isTagInputFocused && availableTags.length > 0 && (
-                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+                        {debouncedTagInput && availableTags.length > 0 && (
+                            <div
+                                className="absolute z-10 w-full mt-1 bg-background/80 dark:bg-background/90 backdrop-blur-sm border border-divider rounded-md shadow-lg transition-all duration-200 ease-in-out transform origin-top scale-y-100">
                                 {availableTags.map((tag) => (
                                     <div
-                                        key={tag}
-                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                        key={tag.name}
+                                        className="px-4 py-2 hover:bg-primary/10 dark:hover:bg-primary/20 cursor-pointer transition-colors duration-150 ease-in-out"
                                         onClick={() => handleAddTag(tag)}
                                     >
-                                        {tag}
+                                        {tag.name}
                                     </div>
                                 ))}
                             </div>
@@ -188,13 +185,13 @@ const ArticleView: FC<ArticleViewProps> = ({
                     <div className="flex flex-wrap gap-2 mt-2">
                         {tags.map((tag) => (
                             <div
-                                key={tag}
-                                className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded"
+                                key={tag.id}
+                                className="flex items-center gap-1 bg-default-100 dark:bg-default-200 px-2 py-1 rounded transition-colors duration-150 ease-in-out"
                             >
-                                <span>{tag}</span>
+                                <span className="text-default-800 dark:text-default-200">{tag.name}</span>
                                 <button
                                     onClick={() => handleRemoveTag(tag)}
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="text-default-500 hover:text-default-700 dark:text-default-400 dark:hover:text-default-200 transition-colors duration-150 ease-in-out"
                                 >
                                     ×
                                 </button>
@@ -216,13 +213,14 @@ const ArticleView: FC<ArticleViewProps> = ({
                                 plugins: [
                                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount','tableofcontents'
                                 ],
                                 toolbar: 'undo redo | blocks | ' +
                                     'bold italic forecolor | alignleft aligncenter ' +
                                     'alignright alignjustify | bullist numlist outdent indent | ' +
                                     'removeformat | help',
-                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                                tableofcontents_depth: 3
                             }}
                         />
                     </div>
@@ -235,4 +233,4 @@ const ArticleView: FC<ArticleViewProps> = ({
     );
 };
 
-export default ArticleView; 
+export default ArticleView;

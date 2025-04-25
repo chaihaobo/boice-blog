@@ -1,24 +1,30 @@
-import {createBrowserRouter} from "react-router";
+import {createHashRouter} from "react-router";
 import Layout from "@/layout/layout.tsx";
-import Index from "@/views";
-import Me from "@/views/me.tsx";
-import CreateArticle from "@/views/airticles/create.tsx";
+import {lazy} from "react";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
         Component: Layout,
         children: [
             {
                 index: true,
-                Component: Index
+                Component: lazy(() => import("@/views"))
             },
             {
                 path: "me",
-                Component: Me
+                Component: lazy(() => import("@/views/me"))
             },
             {
-                path: "admin/article/new",
-                Component: CreateArticle
+                path: "articles/create",
+                Component: lazy(() => import("@/views/articles/create"))
+            },
+            {
+                path: "article/:id",
+                Component: lazy(() => import("@/views/articles/detail"))
+            },
+            {
+                path: "article/:id/edit",
+                Component: lazy(() => import("@/views/articles/edit"))
             }
         ]
     },

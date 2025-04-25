@@ -9,12 +9,18 @@ interface Response<T> {
     data: T
 }
 
+const apiBaseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const api = createAlova({
-    baseURL: '/api',
+    baseURL: apiBaseURL,
     requestAdapter: adapterFetch(),
     statesHook: ReactHook,
-    beforeRequest: async () => {
+    cacheFor: null,
+    beforeRequest: async (method) => {
+        const password = localStorage.getItem("password");
+        if (password) {
+            method.config.headers.Authorization = password;
+        }
     },
     responded: {
         onSuccess: async (response) => {
@@ -51,3 +57,8 @@ export const api = createAlova({
     },
 
 });
+
+
+export const verifyPermission = () => {
+    return api.Post<boolean>('/user/verify-permission', {});
+};

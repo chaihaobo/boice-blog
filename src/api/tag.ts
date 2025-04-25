@@ -5,6 +5,10 @@ export interface Tag {
     name: string;
 }
 
-export const getTags = () => {
-    return api.get<Tag[]>('/tags');
+export const getTags = (q: string) => {
+    return api.Get<Tag[]>('/tags', {
+        params: {
+            q
+        }
+    });
 }; 
