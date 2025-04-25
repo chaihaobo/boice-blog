@@ -1,11 +1,11 @@
 import {FC} from 'react';
 import ArticleView from '@/components/ArticleView';
 import {createArticle, CreateArticleRequest} from '@/api/article';
-import {useNavigate} from 'react-router';
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useNavigator} from "@/components/NavigateProvider.tsx";
 
 const CreateArticle: FC = () => {
-    const navigate = useNavigate();
+    const {navigate} = useNavigator();
     const queryClient = useQueryClient();
     const createArticleMutation = useMutation({
         mutationFn: createArticle,
@@ -24,7 +24,7 @@ const CreateArticle: FC = () => {
     return (
         <ArticleView
             onSubmit={handleSubmit}
-            submitButtonText="创建文章"
+            submitButtonText="创建"
         />
     );
 };

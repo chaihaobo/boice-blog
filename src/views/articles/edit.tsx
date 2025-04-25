@@ -1,11 +1,12 @@
 import {FC} from 'react';
 import ArticleView from '@/components/ArticleView';
 import {CreateArticleRequest, editArticle, EditArticleRequest, getArticle} from '@/api/article';
-import {useNavigate, useParams} from 'react-router';
+import {useParams} from 'react-router';
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
+import {useNavigator} from "@/components/NavigateProvider.tsx";
 
 const EditArticle: FC = () => {
-    const navigate = useNavigate();
+    const {navigate} = useNavigator();
     const queryClient = useQueryClient();
     const {id} = useParams<{ id: string }>();
     const {data: article} = useSuspenseQuery({
@@ -40,7 +41,7 @@ const EditArticle: FC = () => {
             initialDescription={article.description}
             initialContent={article.content}
             onSubmit={handleSubmit}
-            submitButtonText="编辑文章"
+            submitButtonText="保存"
         />
     );
 };

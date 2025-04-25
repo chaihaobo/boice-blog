@@ -5,6 +5,7 @@ import {getArticle} from "@/api/article";
 import {Card, CardBody, CardHeader, Chip, Divider} from "@heroui/react";
 import {formatDate} from "@/utils/date";
 import {motion} from "framer-motion";
+import ShadowBox from "@/components/ShadowBox.tsx";
 
 const ArticleDetail: FC = () => {
     const {id} = useParams<{ id: string }>();
@@ -42,8 +43,8 @@ const ArticleDetail: FC = () => {
                     </CardHeader>
                     <Divider/>
                     <CardBody>
-                        <div className="prose dark:prose-invert max-w-none">
-                            <div dangerouslySetInnerHTML={{__html: article.content}}/>
+                        <div className="prose dark:prose-invert max-w-none ">
+                            <ShadowBox htmlContent={article.content}/>
                         </div>
                     </CardBody>
                 </Card>

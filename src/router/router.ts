@@ -1,10 +1,10 @@
 import {createHashRouter} from "react-router";
-import Layout from "@/layout/layout.tsx";
 import {lazy} from "react";
+import NavigatorLayout from "@/layout/navigatorlayout.tsx";
 
 const router = createHashRouter([
     {
-        Component: Layout,
+        Component: NavigatorLayout,
         children: [
             {
                 index: true,
@@ -29,5 +29,6 @@ const router = createHashRouter([
         ]
     },
 ]);
+
 
 export default router

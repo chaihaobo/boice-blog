@@ -10,6 +10,7 @@ import {
     NavbarMenuToggle,
 } from "@heroui/react";
 import ThemeToggle from "./ThemeToggle";
+import {useNavigator} from "@/components/NavigateProvider.tsx";
 
 export const Logo = () => {
     return (
@@ -59,6 +60,7 @@ const BlogNavbar: FC = () => {
         {title: "文章", to: "/"},
         {title: "关于我", to: "/me"},
     ];
+    const {navigate} = useNavigator();
 
     return (
         <div className="sticky top-0 z-50">
@@ -81,28 +83,33 @@ const BlogNavbar: FC = () => {
                 <NavbarContent className="hidden sm:flex gap-8 flex-3/4" justify='center'>
                     {menuItems.map((item) => (
                         <NavbarItem key={item.to}>
-                            <Link
-                                className="text-foreground hover:text-primary transition-colors"
-                                to={item.to}
-                                onClick={() => setIsMenuOpen(false)}
+                            <a
+                                className="text-foreground hover:text-primary transition-colors cursor-pointer"
+                                onClick={() => {
+                                    setIsMenuOpen(false)
+                                    navigate(item.to)
+                                }}
                             >
                                 {item.title}
-                            </Link>
+                            </a>
                         </NavbarItem>
                     ))}
                 </NavbarContent>
                 <NavbarContent justify="end">
                     <NavbarItem>
-                        <ThemeToggle />
+                        <ThemeToggle/>
                     </NavbarItem>
                 </NavbarContent>
                 <NavbarMenu className="bg-background/60 backdrop-blur-md">
                     {menuItems.map((item) => (
                         <NavbarMenuItem key={item.to}>
                             <Link
-                                className="w-full py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors"
+                                className="w-full py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors cursor-pointer"
                                 to={item.to}
-                                onClick={() => setIsMenuOpen(false)}
+                                onClick={() => {
+                                    setIsMenuOpen(false)
+                                    navigate(item.to)
+                                }}
                             >
                                 {item.title}
                             </Link>

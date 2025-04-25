@@ -8,11 +8,13 @@ import {useInView} from 'react-intersection-observer';
 import {formatDate} from '../utils/date';
 import PasswordModal from "@/components/PasswordModal.tsx";
 import {verifyPermission} from "@/api/api.ts";
+import {useNavigator} from "@/components/NavigateProvider.tsx";
 
 const PAGE_SIZE = 10;
 
 const Index: FC = () => {
     const {ref, inView} = useInView();
+    const {navigate} = useNavigator();
 
     const {
         data,
@@ -116,18 +118,18 @@ const Index: FC = () => {
                                         whileHover={{x: 5}}
                                         transition={{type: "spring", stiffness: 300}}
                                     >
-                                        {hasPermission && <Link
-                                            to={`/article/${article.id}/edit`}
-                                            className="text-primary mr-5 hover:text-primary-600 transition-colors text-sm font-medium tracking-wide"
+                                        {hasPermission && <a
+                                            onClick={() => navigate(`/article/${article.id}/edit`)}
+                                            className="text-primary mr-5 hover:text-primary-600 transition-colors text-sm font-medium tracking-wide cursor-pointer"
                                         >
                                             编辑
-                                        </Link>}
-                                        <Link
-                                            to={`/article/${article.id}`}
-                                            className="text-primary hover:text-primary-600 transition-colors text-sm font-medium tracking-wide"
+                                        </a>}
+                                        <a
+                                            onClick={() => navigate(`/article/${article.id}`)}
+                                            className="text-primary hover:text-primary-600 transition-colors text-sm font-medium tracking-wide cursor-pointer"
                                         >
                                             阅读更多 →
-                                        </Link>
+                                        </a>
                                     </motion.div>
 
                                 </div>

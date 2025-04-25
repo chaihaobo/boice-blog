@@ -208,12 +208,12 @@ const ArticleView: FC<ArticleViewProps> = ({
                             onInit={(_evt, editor) => editorRef.current = editor}
                             initialValue={initialContent}
                             init={{
-                                height: 500,
                                 menubar: false,
+                                inline_boundaries: false,
                                 plugins: [
                                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount','tableofcontents'
+                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
                                 ],
                                 toolbar: 'undo redo | blocks | ' +
                                     'bold italic forecolor | alignleft aligncenter ' +
