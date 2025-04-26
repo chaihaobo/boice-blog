@@ -27,6 +27,13 @@ const Footer: FC = () => {
                     >
                         Built with ❤️ using React, React Query, TypeScript, and Tailwind CSS
                     </motion.p>
+                    <motion.p
+                        className="text-default-500 text-sm"
+                        whileHover={{scale: 1.05}}
+                        transition={{duration: 0.3}}
+                    >
+                        Backend driven by Go, hosted on <a href="https://render.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Render</a>, database by <a href="https://aiven.io" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Aiven</a>
+                    </motion.p>
                     <div className="flex gap-4">
                         <motion.a
                             href="https://github.com/chaihaobo"
