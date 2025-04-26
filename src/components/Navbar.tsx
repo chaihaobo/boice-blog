@@ -76,8 +76,13 @@ const BlogNavbar: FC = () => {
                         className="sm:hidden"
                     />
                     <NavbarBrand className="gap-2">
-                        <Logo/>
-                        <p className="font-bold text-xl text-primary">Boice Blog</p>
+                        <div 
+                            className="flex items-center gap-2 cursor-pointer"
+                            onClick={() => navigate('/')}
+                        >
+                            <Logo/>
+                            <p className="font-bold text-xl text-primary">Boice Blog</p>
+                        </div>
                     </NavbarBrand>
                 </NavbarContent>
                 <NavbarContent className="hidden sm:flex gap-8 flex-3/4" justify='center'>
