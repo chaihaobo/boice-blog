@@ -4,7 +4,7 @@ import {addToast, Spinner} from "@heroui/react";
 import BlogNavbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import toast from "../utils/toast"
-import {useNavigator} from "@/components/NavigateProvider.tsx";
+import {useNavigator} from "@/components/NavigatorProvider.tsx";
 import ArticleSkeleton from "@/components/ArticleSkeleton";
 
 const Layout: FC = () => {

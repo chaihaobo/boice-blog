@@ -8,7 +8,7 @@ import {useInView} from 'react-intersection-observer';
 import {formatDate} from '../utils/date';
 import PasswordModal from "@/components/PasswordModal.tsx";
 import {verifyPermission} from "@/api/api.ts";
-import {useNavigator} from "@/components/NavigateProvider.tsx";
+import {useNavigator} from "@/components/NavigatorProvider.tsx";
 
 const PAGE_SIZE = 10;
 

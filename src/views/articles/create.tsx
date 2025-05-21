@@ -2,7 +2,7 @@ import {FC} from 'react';
 import ArticleView from '@/components/ArticleView';
 import {createArticle, CreateArticleRequest} from '@/api/article';
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {useNavigator} from "@/components/NavigateProvider.tsx";
+import {useNavigator} from "@/components/NavigatorProvider.tsx";
 
 const CreateArticle: FC = () => {
     const {navigate} = useNavigator();

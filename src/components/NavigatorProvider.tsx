@@ -7,15 +7,15 @@ export interface Navigator {
     navigate: (path: string) => void
 }
 
-const NavigateContext = createContext<Navigator | null>(null)
+const NavigatorContext = createContext<Navigator | null>(null)
 
 
-export const NavigateProvider: FC<{ children: ReactNode }> = ({children}) => {
+export const NavigatorProvider: FC<{ children: ReactNode }> = ({children}) => {
     const [isPending, startTransition] = useTransition()
     const routerNavigate = useNavigate();
 
     return (
-        <NavigateContext.Provider value={{
+        <NavigatorContext.Provider value={{
             isPending, navigate: (path: string) => {
                 startTransition(() => {
                     routerNavigate(path)
@@ -23,13 +23,13 @@ export const NavigateProvider: FC<{ children: ReactNode }> = ({children}) => {
             }
         }}>
             {children}
-        </NavigateContext.Provider>
+        </NavigatorContext.Provider>
     )
 
 }
 
 export const useNavigator = () => {
-    const navigator = use(NavigateContext);
+    const navigator = use(NavigatorContext);
     if (!navigator) {
         throw new Error("No navigator set. pls least set one!")
     }

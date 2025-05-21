@@ -1,14 +1,14 @@
 import {FC} from "react";
-import {NavigateProvider} from "@/components/NavigateProvider.tsx";
+import {NavigatorProvider} from "@/components/NavigatorProvider.tsx";
 import Layout from "@/layout/layout.tsx";
 
 const NavigatorLayout: FC = () => {
 
 
     return (
-        <NavigateProvider>
+        <NavigatorProvider>
             <Layout/>
-        </NavigateProvider>
+        </NavigatorProvider>
     )
 }
 

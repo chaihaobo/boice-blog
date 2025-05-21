@@ -3,7 +3,7 @@ import ArticleView from '@/components/ArticleView';
 import {CreateArticleRequest, editArticle, EditArticleRequest, getArticle} from '@/api/article';
 import {useParams} from 'react-router';
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
-import {useNavigator} from "@/components/NavigateProvider.tsx";
+import {useNavigator} from "@/components/NavigatorProvider.tsx";
 
 const EditArticle: FC = () => {
     const {navigate} = useNavigator();

@@ -10,7 +10,7 @@ import {
     NavbarMenuToggle,
 } from "@heroui/react";
 import ThemeToggle from "./ThemeToggle";
-import {useNavigator} from "@/components/NavigateProvider.tsx";
+import {useNavigator} from "@/components/NavigatorProvider.tsx";
 
 export const Logo = () => {
     return (
@@ -59,6 +59,7 @@ const BlogNavbar: FC = () => {
     const menuItems = [
         {title: "文章", to: "/"},
         {title: "关于我", to: "/me"},
+        {title: "视频聊天(WebRTC)", to: "https://chatvideo.chaihaobo.tech/"},
     ];
     const {navigate} = useNavigator();
 
@@ -76,7 +77,7 @@ const BlogNavbar: FC = () => {
                         className="sm:hidden"
                     />
                     <NavbarBrand className="gap-2">
-                        <div 
+                        <div
                             className="flex items-center gap-2 cursor-pointer"
                             onClick={() => navigate('/')}
                         >
@@ -91,6 +92,10 @@ const BlogNavbar: FC = () => {
                             <a
                                 className="text-foreground hover:text-primary transition-colors cursor-pointer"
                                 onClick={() => {
+                                    if (item.to.startsWith("http")) {
+                                        window.open(item.to, "_blank");
+                                        return
+                                    }
                                     setIsMenuOpen(false)
                                     navigate(item.to)
                                 }}
@@ -112,6 +117,10 @@ const BlogNavbar: FC = () => {
                                 className="w-full py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors cursor-pointer"
                                 to={item.to}
                                 onClick={() => {
+                                    if (item.to.startsWith("http")) {
+                                        window.open(item.to, "_blank");
+                                        return
+                                    }
                                     setIsMenuOpen(false)
                                     navigate(item.to)
                                 }}
